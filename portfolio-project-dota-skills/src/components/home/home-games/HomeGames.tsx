@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { customKeys } from '../../../consts/custom-keys'
-import logo from '../../../assets/logo.jpg'
+import logo from '../../../assets/invoker-dota-2.gif'
 import { invokerSkills } from '../../../consts/invoker-skills'
 import { IInvokerSkill } from '../../../types'
 import bomjestvo from '../../../assets/bomjestvo.png'
@@ -25,6 +25,7 @@ const HomeGames = ({
 	result,
 	setResult,
 	setIncorrectKeyCount,
+	incorrectKeyCount,
 }: {
 	incorrectKeyCount: number
 	setIncorrectKeyCount: React.Dispatch<React.SetStateAction<number>>
@@ -43,6 +44,7 @@ const HomeGames = ({
 	const findPhotoSkill = (index: number) => {
 		return customKeys.find(item => item.key == keys[index])?.photo
 	}
+	const arraySkills = [...invokerSkills]
 	const [randomArraySkills, setRandomArraySkills] = useState<IInvokerSkill[]>(
 		[]
 	)
@@ -50,8 +52,37 @@ const HomeGames = ({
 	const shuffleArray = (array: any[]) => {
 		return array.sort(() => Math.random() - 0.5)
 	}
+
+	const start = () => {
+		if (!startGame) {
+			setStartGame(true)
+			setCurrentStep(0)
+			setKeys([])
+			const shuffledSkills = shuffleArray(arraySkills)
+			setRandomArraySkills(shuffledSkills)
+			setCurrentTimer(0)
+			setIncorrectKeyCount(0)
+			setCountKeys(0)
+		}
+	}
+
+	useEffect(() => {
+		const handleEnterEvent = (event: KeyboardEvent) => {
+			if (event.key === 'Enter') {
+				start()
+			}
+		}
+
+		window.addEventListener('keydown', handleEnterEvent)
+
+		return () => {
+			window.removeEventListener('keydown', handleEnterEvent)
+		}
+	}, [startGame])
+
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent): void => {
+			event.preventDefault()
 			const pressedKey = event.key.toLowerCase()
 			if (!customKeys.some(item => item.key === pressedKey)) {
 				setIncorrectKeyCount(prev => prev + 1)
@@ -69,15 +100,23 @@ const HomeGames = ({
 	}, [setCountKeys, setKeys, setIncorrectKeyCount])
 
 	useEffect(() => {
-		const expectedKeys = invokerSkills[currentStep].keys.join('')
+		const expectedKeys = randomArraySkills[currentStep]?.keys.join('')
 		if (keys.length === 3) {
-			console.log('3 GOOD')
-			if (keys.join('') === expectedKeys) {
-				console.log('GOOD')
-				setResult(currentTimer)
+			if (
+				keys
+					.join('')
+					.split('')
+					.sort((a, b) => b.localeCompare(a))
+					.join('') ===
+				expectedKeys
+					.split('')
+					.sort((a, b) => b.localeCompare(a))
+					.join('')
+			) {
+				setResult(currentTimer + incorrectKeyCount * 2)
 
 				setTimeout(() => {
-					if (currentStep < invokerSkills.length - 1) {
+					if (currentStep < randomArraySkills?.length - 1) {
 						setKeys([])
 						setCurrentStep(prevStep => prevStep + 1)
 					} else {
@@ -85,7 +124,6 @@ const HomeGames = ({
 					}
 				}, 100)
 			} else {
-				console.log('NOT GOOD')
 				setIncorrectKeyCount(prev => prev + 1)
 
 				setTimeout(() => {
@@ -97,16 +135,6 @@ const HomeGames = ({
 		}
 	}, [keys])
 
-	const start = () => {
-		if (!startGame) {
-			setStartGame(true)
-			setCurrentStep(0)
-			setKeys([])
-			const shuffledSkills = shuffleArray(invokerSkills)
-			setRandomArraySkills(shuffledSkills)
-		}
-	}
-
 	useEffect(() => {
 		let start: number | null = null
 		let animationFrame: number | null = null
@@ -116,7 +144,7 @@ const HomeGames = ({
 			if (start === null) {
 				start = now
 			}
-			const elapsed = Math.floor((now - start) / 1000) // Преобразуем в секунды
+			const elapsed = Math.floor((now - start) / 1000)
 			setCurrentTimer(elapsed)
 			animationFrame = requestAnimationFrame(updateTimer)
 		}
@@ -124,7 +152,7 @@ const HomeGames = ({
 		if (startGame) {
 			animationFrame = requestAnimationFrame(updateTimer)
 		} else {
-			setCurrentTimer(0) // Сброс таймера
+			setCurrentTimer(0)
 		}
 
 		return () => {
