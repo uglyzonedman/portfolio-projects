@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import tech from '../../assets/techies-минер.gif'
 import HomeControlls from './home-controlls/HomeControlls'
 import HomeGames from './home-games/HomeGames'
 import HomeSkills from './home-skills/HomeSkills'
@@ -39,6 +39,10 @@ const Home: React.FC = () => {
 					setStartGame={setStartGame}
 				/>
 				<HomeSkills />
+			</div>
+			<div className='flex justify-between'>
+				<img src={tech} alt='' />
+				<img src={tech} alt='' />
 			</div>
 		</div>
 	)

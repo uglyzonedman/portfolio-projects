@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import FlyingSpheres from '../components/flying-spheres/FlyingSpheres'
 const Layout = () => {
 	return (
@@ -10,7 +10,7 @@ const Layout = () => {
 						<h3 className='text-white text-[32px] font-bold'>
 							DotaSkillsPractice
 						</h3>
-						{/* <ul className='flex'>
+						<ul className='flex'>
 							<li className='ml-8'>
 								<Link className='text-white font-medium text-xl' to={'/'}>
 									Главная
@@ -21,7 +21,12 @@ const Layout = () => {
 									Таблица лидеров
 								</Link>
 							</li>
-						</ul> */}
+							<li className='ml-8'>
+								<Link className='text-white font-medium text-xl' to={'/auth'}>
+									Авторизация
+								</Link>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</header>

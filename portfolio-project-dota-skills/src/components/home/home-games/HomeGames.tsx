@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { customKeys } from '../../../consts/custom-keys'
 import logo from '../../../assets/invoker-dota-2.gif'
+
 import { invokerSkills } from '../../../consts/invoker-skills'
 import { IInvokerSkill } from '../../../types'
 import bomjestvo from '../../../assets/bomjestvo.png'
